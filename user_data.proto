@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+message User {
+    string user_id = 1;
+    string user_list_id = 2;
+}
+
+message UpdateUsersDataRequest {
+    repeated User ops = 1;
+}
