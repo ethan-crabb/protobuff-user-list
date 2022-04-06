@@ -1,10 +1,59 @@
 syntax = "proto3";
 
-message User {
+message ops {
     string user_id = 1;
     string user_list_id = 2;
+    string status = 3;
 }
+message Request {
+    repeated ops UpdateUsersDataRequest = 1;
+}
+enum ErrorCode {
+  NO_ERROR = 0;
 
-message UpdateUsersDataRequest {
-    repeated User ops = 1;
+  // Some of the user data operations failed.  See comments in the
+  // UpdateUserDataResponse
+  PARTIAL_SUCCESS = 1;
+
+  // Provided network_id cannot add data to attribute_id or non-HTTPS.
+  PERMISSION_DENIED = 2;
+
+  // Cannot parse payload.
+  BAD_DATA = 3;
+
+  // Cannot decode provided cookie.
+  BAD_COOKIE = 4;
+
+  // Invalid or closed user_list_id.
+  BAD_ATTRIBUTE_ID = 5;
+
+  // An invalid nid parameter was provided in the request.
+  BAD_NETWORK_ID = 7;
+
+  // Request payload size over allowed limit.
+  REQUEST_TOO_BIG = 8;
+
+  // No UserDataOperation messages in UpdateUsersDataRequest.
+  EMPTY_REQUEST = 9;
+
+  // The server could not process the request due to an internal error. Retrying
+  // the same request later is suggested.
+  INTERNAL_ERROR = 10;
+
+  // Bad data_source_id -- most likely out of range from [1, 1000].
+  BAD_DATA_SOURCE_ID = 11;
+
+  // The timestamp is a past/future time that is too far from current time.
+  BAD_TIMESTAMP = 12;
+
+  // Missing internal mapping.
+  // If operation is PARTNER_PROVIDED_ID, then this error means our mapping
+  // table does not contain corresponding google user id. This mapping is
+  // recorded during Cookie Matching.
+  // For other operations, then it may be internal error.
+  UNKNOWN_ID = 21;
+
+}
+message UpdateUsersDataResponse {
+  optional ErrorCode status = 1;
 }
